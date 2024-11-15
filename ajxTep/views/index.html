@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista Utenti</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Lista Utenti</h1>
+        <table id="userTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>Città</th>
+                    <th>Titolo di Studio</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <button onclick="loadDiplomaUsers()">Mostra Utenti con Diploma</button>
+    </div>
+
+    <script>
+
+        function loadAllUsers() {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', '/utenti', true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    const users = JSON.parse(xhr.responseText);
+                    displayUsers(users);
+                }
+            };
+            xhr.send();
+        }
+
+
+        function loadDiplomaUsers() {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', '/utenti/diploma', true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    const response = JSON.parse(xhr.responseText);
+                    displayUsers(response.utenti);
+                }
+            };
+            xhr.send();
+        }
+
+        function displayUsers(users) {
+            const tbody = document.getElementById('userTable').getElementsByTagName('tbody')[0];
+            tbody.innerHTML = '';
+            users.forEach(user => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${user.id}</td>
+                    <td>${user.nome}</td>
+                    <td>${user.email}</td>
+                    <td>${user.citta}</td>
+                    <td>${user.titolo_studio}</td>
+                `;
+            });
+        }
+
+        window.onload = loadAllUsers;
+    </script>
+</body>
+</html>
